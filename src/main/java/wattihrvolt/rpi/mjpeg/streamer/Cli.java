@@ -10,83 +10,99 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+/**
+ * Command Line Interface
+ */
 public class Cli {
- private static final Logger log = Logger.getLogger(Cli.class.getName());
- private String[] args = null;
- private Options options = new Options();
+    private static final Logger log = Logger.getLogger(Cli.class.getName());
+    private String[] args = null;
+    private Options options = new Options();
 
+    // defalut values
+    private int port = 8080;
+    private String width = "640";
+    private String heigth = "480";
+    private String rotation = "0";
+    private boolean timestamp=false;
 
- private int port=8080;
- private int width=640;
- private int heigth=480;
- 
- public Cli(String[] args) {
+    public Cli(String[] args) {
 
-  this.args = args;
-  
- 
+        this.args = args;
+        options.addOption("h", "help", false, "show help.");
+        options.addOption("w", "width", true, "set the image width .");
+        options.addOption("b", "heigth", true, "set the image heigth.");
+        options.addOption("r", "rotation", true, "set image rotation in deg 0-359.");
+        options.addOption("t", "timestamp", false, "include a timestamp in video output.");
 
-  options.addOption("h", "help", false, "show help.");
-  options.addOption("w", "width", true, "set the image width .");
-  options.addOption("b", "heigth",true, "set the image heigth.");
-  options.addOption("p","port", true, "set the port." );
+        options.addOption("p", "port", true, "set the port.");
 
- }
+    }
 
- public void parse() {
-  CommandLineParser parser = new BasicParser();
+    public void parse() {
+        CommandLineParser parser = new BasicParser();
 
-  CommandLine cmd = null;
-  try {
-   cmd = parser.parse(options, args);
+        CommandLine cmd = null;
+        try {
+            cmd = parser.parse(options, args);
 
-   if (cmd.hasOption("h"))
-    help();
+            if (cmd.hasOption("h"))
+                help();
 
-   if (cmd.hasOption("w")) {
-    width = Integer.valueOf(cmd.getOptionValue("w"));
-    log.log(Level.INFO, "setting width: " + width);
-   }
-   if (cmd.hasOption("b")) {
-	   heigth = Integer.valueOf(cmd.getOptionValue("b"));
-	    log.log(Level.INFO, "setting heigth" + heigth);
-	   }
-   if(cmd.hasOption("p")) {
-	   port = Integer.valueOf(cmd.getOptionValue("p"));
-	   log.log(Level.INFO, "Setting port" + port);
-   }
+            if (cmd.hasOption("w")) {
+                width = cmd.getOptionValue("w");
+            }
+            if (cmd.hasOption("b")) {
+                heigth = cmd.getOptionValue("b");
+            }
+            if (cmd.hasOption("t")) {
+                timestamp = true;
+            }
+            if (cmd.hasOption("r")) {
+                rotation = cmd.getOptionValue("r");
+            }
+
+            if (cmd.hasOption("p")) {
+                port = Integer.valueOf(cmd.getOptionValue("p"));
+            }
    /*else {
     log.log(Level.SEVERE, "Missing options");
     help();
    }*/
 
-  } catch (ParseException e) {
-   log.log(Level.SEVERE, "Failed to parse comand line properties", e);
-   help();
-  }
- }
+        } catch (ParseException e) {
+            log.log(Level.SEVERE, "Failed to parse comand line properties", e);
+            help();
+        }
+    }
 
- private void help() {
-  // This prints out some help
-  HelpFormatter formater = new HelpFormatter();
+    private void help() {
+        // This prints out some help
+        HelpFormatter formater = new HelpFormatter();
 
-  formater.printHelp("Main", options);
-  System.exit(0);
- }
- 
- public int getPort() {
-	return port;
-}
+        formater.printHelp("Main", options);
+        System.exit(0);
+    }
 
-
-public int getWidth() {
-	return width;
-}
+    public int getPort() {
+        return port;
+    }
 
 
-public int getHeigth() {
-	return heigth;
-}
+    public String getWidth() {
+        return width;
+    }
 
- 
+
+    public String getHeigth() {
+        return heigth;
+    }
+
+    public String getRotation() {
+        return rotation;
+    }
+
+
+    public boolean getTimestamp() {
+        return timestamp;
+    }
 }
